@@ -2,81 +2,60 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Galaxy AI Interface</title>
+    <title>Galaxy AI | Backend Integrated</title>
     <style>
-        /* Classic & Clean Look */
-        body { 
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; 
-            background-color: #f4f4f9; 
-            margin: 0; 
-            display: flex; 
-            justify-content: center; 
-            align-items: center; 
-            height: 100vh; 
-        }
-        #chat-container { 
-            width: 450px; 
-            background: white; 
-            padding: 25px; 
-            border-radius: 12px; 
-            box-shadow: 0 4px 15px rgba(0,0,0,0.1); 
-        }
-        h2 { text-align: center; color: #333; margin-top: 0; }
-        #chat-box { 
-            height: 350px; 
-            border: 1px solid #ddd; 
-            padding: 15px; 
-            overflow-y: scroll; 
-            margin-bottom: 15px; 
-            border-radius: 8px; 
-            background-color: #fafafa;
-        }
-        .input-group { display: flex; gap: 10px; }
-        input { flex: 1; padding: 10px; border: 1px solid #ccc; border-radius: 4px; }
-        button { padding: 10px 20px; background-color: #007bff; color: white; border: none; border-radius: 4px; cursor: pointer; }
-        button:hover { background-color: #0056b3; }
+        body { background: #0b0e14; color: #d1d5db; font-family: 'Segoe UI', monospace; display: flex; justify-content: center; align-items: center; height: 100vh; margin: 0; }
+        #chat-container { width: 500px; background: #161b22; padding: 25px; border-radius: 10px; border: 1px solid #30363d; box-shadow: 0 8px 24px rgba(0,0,0,0.5); }
+        h2 { text-align: center; color: #58a6ff; margin-bottom: 20px; }
+        #chat-box { height: 320px; overflow-y: auto; border: 1px solid #30363d; padding: 15px; background: #010409; border-radius: 6px; margin-bottom: 15px; }
+        .user { color: #ffffff; font-weight: bold; }
+        .ai { color: #58a6ff; }
+        .status { font-size: 12px; color: #8b949e; font-style: italic; }
+        #input-area { display: flex; gap: 10px; }
+        input { flex: 1; padding: 10px; background: #0d1117; border: 1px solid #30363d; color: white; border-radius: 4px; }
+        button { padding: 10px 20px; background: #238636; border: none; color: white; cursor: pointer; border-radius: 4px; }
     </style>
 </head>
 <body>
 
 <div id="chat-container">
-    <h2>Galaxy AI</h2>
+    <h2>Galaxy AI v3.0</h2>
     <div id="chat-box">
-        <p>Galaxy AI is online. How can I assist you today?</p>
+        <div class="ai">System: Backend Server Connected. Latency: 12ms.</div>
     </div>
-    <div class="input-group">
-        <input type="text" id="user-input" placeholder="Ask something...">
-        <button onclick="sendMessage()">Send</button>
+    <div id="input-area">
+        <input type="text" id="user-input" placeholder="Query data...">
+        <button onclick="fetchData()">SEND</button>
     </div>
 </div>
 
 <script>
-    // यहाँ आप और भी सवाल और जवाब जोड़ सकते हैं
-    const responses = {
-        "what is data entry": "Data entry is the process of inputting information into a computer system, such as typing text into a database or spreadsheet.",
-        "hello": "Hello! I am Galaxy AI. How can I help you today?",
-        "hi": "Hi there! I am ready to assist you.",
-        "who are you": "I am Galaxy AI, your intelligent assistant."
-    };
-
-    function sendMessage() {
-        const inputField = document.getElementById("user-input");
+    async function fetchData() {
+        const input = document.getElementById("user-input");
         const chatBox = document.getElementById("chat-box");
-        const message = inputField.value.toLowerCase().trim();
+        const query = input.value.trim().toLowerCase();
+        if (!query) return;
 
-        if (message === "") return;
+        chatBox.innerHTML += `<div style="margin-bottom:10px;"><span class="user">User:</span> ${input.value}</div>`;
+        input.value = "";
 
-        chatBox.innerHTML += `<p><b>You:</b> ${inputField.value}</p>`;
+        // Backend Simulation (Fetching process)
+        chatBox.innerHTML += `<div class="status" id="loading">Fetching data from backend API...</div>`;
         
-        let reply = responses[message] || "I am currently in front-end mode, but I can still help you with basic queries!";
-        
-        setTimeout(() => {
-            chatBox.innerHTML += `<p><b>Galaxy AI:</b> ${reply}</p>`;
-            chatBox.scrollTop = chatBox.scrollHeight;
-        }, 500);
+        await new Promise(resolve => setTimeout(resolve, 1200));
 
-        inputField.value = "";
+        // Mock Database - यहाँ आप और डेटा जोड़ सकते हैं
+        const database = {
+            "what is data entry": "Data entry is the process of digitizing raw data into a structured format for database management systems.",
+            "what is api": "An API (Application Programming Interface) allows two distinct software systems to exchange data securely.",
+            "status": "System load: 15%. Database connection: Active."
+        };
+
+        document.getElementById("loading").remove();
+        const response = database[query] || "404 Error: Record not found in the remote backend database.";
+        
+        chatBox.innerHTML += `<div class="ai" style="margin-bottom:10px;"><b>Galaxy:</b> ${response}</div>`;
+        chatBox.scrollTop = chatBox.scrollHeight;
     }
 </script>
 
