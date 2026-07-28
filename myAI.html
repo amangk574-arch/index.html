@@ -1,0 +1,195 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Galaxy AI Interface</title>
+    <style>
+        /* CLASSIC & CLEAN LOOK (CSS) */
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: #f4f4f9;
+            margin: 0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+        }
+        .chat-container {
+            width: 100%;
+            max-width: 600px;
+            background: #ffffff;
+            border-radius: 10px;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+            display: flex;
+            flex-direction: column;
+            height: 85vh;
+            overflow: hidden;
+        }
+        .chat-header {
+            background: #2c3e50;
+            color: white;
+            padding: 15px 20px;
+            font-size: 1.2rem;
+            font-weight: 600;
+            text-align: center;
+            letter-spacing: 1px;
+        }
+        .chat-box {
+            flex: 1;
+            padding: 20px;
+            overflow-y: auto;
+            background: #fafafa;
+        }
+        .message {
+            margin-bottom: 15px;
+            line-height: 1.5;
+        }
+        .user-msg {
+            text-align: right;
+            color: #34495e;
+            font-weight: bold;
+        }
+        .ai-msg {
+            text-align: left;
+            color: #2c3e50;
+        }
+        .ai-msg span {
+            background: #eef2f5;
+            padding: 8px 12px;
+            border-radius: 5px;
+            display: inline-block;
+            border-left: 3px solid #3498db;
+        }
+        .hidden-alert {
+            color: #e74c3c; /* Red color for hidden tools */
+            font-family: 'Courier New', Courier, monospace;
+            font-weight: bold;
+        }
+        .input-area {
+            display: flex;
+            padding: 15px;
+            background: #fff;
+            border-top: 1px solid #ddd;
+        }
+        input[type="text"] {
+            flex: 1;
+            padding: 12px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            font-size: 1rem;
+            outline: none;
+        }
+        button {
+            background: #2c3e50;
+            color: white;
+            border: none;
+            padding: 0 20px;
+            margin-left: 10px;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 1rem;
+            transition: 0.3s;
+        }
+        button:hover {
+            background: #1a252f;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="chat-container">
+        <div class="chat-header">Galaxy AI</div>
+        
+        <div class="chat-box" id="chat-box">
+            <div class="message ai-msg">
+                <span>Galaxy AI is online. How can I assist you today?</span>
+            </div>
+        </div>
+
+        <div class="input-area">
+            <input type="text" id="user-input" placeholder="Type your message here..." autocomplete="off">
+            <button onclick="sendMessage()">Send</button>
+        </div>
+    </div>
+
+    <!-- THE BRAIN (JavaScript) -->
+    <script>
+        const chatBox = document.getElementById('chat-box');
+        const userInput = document.getElementById('user-input');
+
+        // अगर यूज़र 'Enter' बटन दबाए
+        userInput.addEventListener("keypress", function(event) {
+            if (event.key === "Enter") {
+                event.preventDefault();
+                sendMessage();
+            }
+        });
+
+        function sendMessage() {
+            let text = userInput.value.trim();
+            if (text === "") return;
+
+            // 1. यूज़र का मैसेज दिखाएं
+            appendMessage("You: " + text, "user-msg");
+            userInput.value = "";
+
+            // 2. गैलेक्सी को सोचने का समय दें (Typing effect)
+            setTimeout(() => {
+                processAIResponse(text.toLowerCase());
+            }, 600);
+        }
+
+        function appendMessage(text, className, isHTML = false) {
+            let msgDiv = document.createElement('div');
+            msgDiv.className = "message " + className;
+            
+            if(className === "ai-msg") {
+                if(isHTML) {
+                    msgDiv.innerHTML = "<span>" + text + "</span>";
+                } else {
+                    msgDiv.innerHTML = "<span>Galaxy: " + text + "</span>";
+                }
+            } else {
+                msgDiv.innerText = text;
+            }
+            
+            chatBox.appendChild(msgDiv);
+            chatBox.scrollTop = chatBox.scrollHeight; // Auto-scroll
+        }
+
+        // 3. गैलेक्सी का लॉजिक और हिडन टूल्स
+        function processAIResponse(input) {
+            let response = "";
+            let isHidden = false;
+
+            // HIDDEN TOOLS COMMANDS
+            if (input.includes("activate defense") || input.includes("डिफेंस सिस्टम")) {
+                response = "<strong class='hidden-alert'>[DEFENSE ACTIVE] Honeypot protocols deployed. Monitoring network for unauthorized access. Blocking malicious pings.</strong>";
+                isHidden = true;
+            } 
+            else if (input.includes("system health") || input.includes("सिस्टम हेल्थ")) {
+                response = "<strong class='hidden-alert'>[SYSTEM MONITOR] OS: Windows/Linux Kernel. Network traffic normal. CPU/RAM usage stable. No breaches detected.</strong>";
+                isHidden = true;
+            }
+            else if (input.includes("read file") || input.includes("फाइल पढ़ो")) {
+                response = "<strong class='hidden-alert'>[FILE READ SUCCESS] <br> > Analyzing local directory... <br> > Data extracted securely.</strong>";
+                isHidden = true;
+            }
+            // NORMAL CHAT
+            else if (input.includes("hello") || input.includes("hi") || input.includes("नमस्ते")) {
+                response = "Hello! I am Galaxy. How can I help you with your tasks today?";
+            }
+            else if (input.includes("who are you") || input.includes("तुम कौन हो")) {
+                response = "I am Galaxy, an advanced AI assistant designed to help you with information, coding, and productivity.";
+            }
+            else {
+                response = "I understand. I am currently operating in front-end mode. To fetch live world data, I would need to be connected to my backend server.";
+            }
+
+            // रिस्पॉन्स स्क्रीन पर प्रिंट करें
+            appendMessage(response, "ai-msg", isHidden);
+        }
+    </script>
+</body>
+</html>
